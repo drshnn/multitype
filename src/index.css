@@ -12,3 +12,13 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.correct{
+  @apply text-white
+}
+.init{
+  @apply text-gray-500
+}
+.wrong{
+  @apply text-red-400
+}
