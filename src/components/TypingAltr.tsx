@@ -1,4 +1,5 @@
 import { KeyboardEvent, useState } from "react";
+import { WordsState } from "../assets/types/Types";
 
 export default function TypingAltr() {
     const words =
@@ -6,9 +7,9 @@ export default function TypingAltr() {
     const wordsArr = words.split(",").map((i) => i.trim());
     const [pointerPos, setPointerPos] = useState([0, 0]);
     const [isTestStarted, setIsTestStarted] = useState(false);
-    const [wordsState, setWordsState] = useState<string[][]>(wordsArr.map((i: string) => {
-        return i.split("").map(j => {
-            return "init"
+    const [wordsState, setWordsState] = useState<WordsState[][]>(wordsArr.map((i: string) => {
+        return i.split("").map((j: string) => {
+            return { class: 'init', char: j, extra: false }
         })
     }));
 
@@ -24,7 +25,6 @@ export default function TypingAltr() {
                 //starting the clock
                 let timeSec = 0;
                 const interval = setInterval(() => {
-                    console.log(timeSec)
                     timeSec++
                     if (timeSec === 60) {
                         clearInterval(interval);
@@ -33,46 +33,41 @@ export default function TypingAltr() {
             }
 
             //calculating the stats
-            console.log(wordsArr[pointerPos[0]][pointerPos[1]], event.key);
+
+            //if the key is correct
             if (wordsArr[pointerPos[0]][pointerPos[1]] === event.key) {
                 setPointerPos(prevPointerPos => [prevPointerPos[0], prevPointerPos[1] + 1])
                 setWordsState(prevWordsState => prevWordsState.map((i, indi) => {
                     return i.map((j, indj) => {
                         if (indi === pointerPos[0] && indj === pointerPos[1]) {
-                            return 'correct'
+                            if (j.class !== 'wrong') {
+                                return { ...j, class: 'correct' }
+                            }
+                            return j
                         } else {
                             return j
                         }
                     })
                 }))
-            } else if (event.key === ' ') {
-                setPointerPos(prevPointerPos => [prevPointerPos[0] + 1, 0])
-            } else if (event.key === 'Backspace') {
-                setWordsState(prevWordsState => prevWordsState.map((i, indi) => {
-                    return i.map((j, indj) => {
-                        if (indi === pointerPos[0] && indj === pointerPos[1]) {
-                            return 'init'
-                        } else {
-                            return j
-                        }
-                    })
-                }))
-                if (pointerPos[1] > 0) {
-                    setPointerPos(prevPointerPos => [prevPointerPos[0], prevPointerPos[1] - 1])
-                } else if (pointerPos[0] > 0) {
-                    setPointerPos(prevPointerPos => [prevPointerPos[0] - 1, wordsArr[prevPointerPos[0] - 1].length - 1])
+            }
+            //if pressed key is not correct
+            else {
+                //if pressed key is "space" and the pointer is on last character of the word
+                if (event.key === ' ' && pointerPos[1] === wordsArr[pointerPos[0]].length) {
+                    setPointerPos(prevPointerPos => [prevPointerPos[0] + 1, 0])
                 }
-            } else {
-                setPointerPos(prevPointerPos => [prevPointerPos[0], prevPointerPos[1] + 1])
-                setWordsState(prevWordsState => prevWordsState.map((i, indi) => {
-                    return i.map((j, indj) => {
-                        if (indi === pointerPos[0] && indj === pointerPos[1]) {
-                            return 'wrong'
-                        } else {
-                            return j
-                        }
-                    })
-                }))
+                //if pressed key is just incorrect
+                else {
+                    setWordsState(prevWordsState => prevWordsState.map((i, indi) => {
+                        return i.map((j, indj) => {
+                            if (indi === pointerPos[0] && indj === pointerPos[1]) {
+                                return { ...j, class: 'wrong' }
+                            } else {
+                                return j
+                            }
+                        })
+                    }))
+                }
             }
 
         }
@@ -81,21 +76,21 @@ export default function TypingAltr() {
 
     return (
         <div className="words-wrap h-1/2 w-9/12 overflow-hidden flex flex-row gap-4 flex-wrap focus:outline-none" onKeyDown={handleKeyDown} tabIndex={0}>
-            {wordsArr.map((word, wordId) => {
+            {wordsState.map((word, wordId) => {
                 return (
                     <div
                         className="word flex flex-row gap-[2px] text-2xl items-center"
                         key={wordId}
                     >
-                        {word.split("").map((letter, letterId) => {
+                        {word.map((letter, letterId) => {
                             if (pointerPos[0] === wordId && pointerPos[1] === letterId) {
                                 return (
                                     <span className="bg-white text-black" key={letterId}>
-                                        {letter}
+                                        {letter.char}
                                     </span>
                                 );
                             }
-                            return <span key={letterId} className={wordsState[wordId][letterId]}>{letter}</span>;
+                            return <span key={letterId} className={letter.class}>{letter.char}</span>;
                         })}
                     </div>
                 );
