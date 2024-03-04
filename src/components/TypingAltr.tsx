@@ -1,4 +1,4 @@
-import { KeyboardEvent, useState } from "react";
+import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import { WordsState } from "../assets/types/Types";
 
 export default function TypingAltr() {
@@ -15,7 +15,15 @@ export default function TypingAltr() {
     const [returnInterval, setReturnInterval] = useState<number>();
     const [correctChar, setCorrectChar] = useState(0);
 
+    const divRef = useRef<HTMLDivElement | null>(null);
 
+
+    useEffect(() => {
+        // Focus the div when the component mounts
+        if (divRef.current) {
+            divRef.current.focus();
+        }
+    }, []);
 
 
     const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
@@ -88,7 +96,7 @@ export default function TypingAltr() {
 
 
     return (
-        <div className="words-wrap h-1/2 w-9/12 overflow-hidden flex flex-row gap-4 flex-wrap focus:outline-none" onKeyDown={handleKeyDown} tabIndex={0}>
+        <div className="words-wrap h-1/2 w-9/12 overflow-hidden flex flex-row gap-4 flex-wrap focus:outline-none" onKeyDown={handleKeyDown} tabIndex={0} ref={divRef}>
             {wordsState.map((word, wordId) => {
                 return (
                     <div
