@@ -12,6 +12,8 @@ export default function TypingAltr() {
             return { class: 'init', char: j, extra: false }
         })
     }));
+    const [returnInterval, setReturnInterval] = useState<number>();
+    const [correctChar, setCorrectChar] = useState(0);
 
 
 
@@ -24,18 +26,19 @@ export default function TypingAltr() {
 
                 //starting the clock
                 let timeSec = 0;
-                const interval = setInterval(() => {
+                setReturnInterval(setInterval(() => {
                     timeSec++
-                    if (timeSec === 60) {
-                        clearInterval(interval);
-                    }
-                }, 1000)
+                    // if (timeSec === 60) {
+                    //     clearInterval(interval);
+                    // }
+                }, 1000))
             }
 
             //calculating the stats
 
             //if the key is correct
             if (wordsArr[pointerPos[0]][pointerPos[1]] === event.key) {
+                setCorrectChar(prevChar => prevChar + 1)
                 setPointerPos(prevPointerPos => [prevPointerPos[0], prevPointerPos[1] + 1])
                 setWordsState(prevWordsState => prevWordsState.map((i, indi) => {
                     return i.map((j, indj) => {
@@ -54,6 +57,16 @@ export default function TypingAltr() {
             else {
                 //if pressed key is "space" and the pointer is on last character of the word
                 if (event.key === ' ' && pointerPos[1] === wordsArr[pointerPos[0]].length) {
+                    console.log(pointerPos[0], wordsArr.length - 1);
+                    console.log(pointerPos[1], wordsArr[pointerPos[0]].length);
+                    console.log(returnInterval);
+
+
+
+                    if (pointerPos[0] === wordsArr.length - 1 && pointerPos[1] === wordsArr[pointerPos[0]].length && returnInterval) {
+                        clearInterval(returnInterval);
+                        alert(correctChar)
+                    }
                     setPointerPos(prevPointerPos => [prevPointerPos[0] + 1, 0])
                 }
                 //if pressed key is just incorrect
