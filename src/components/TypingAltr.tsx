@@ -3,7 +3,7 @@ import { WordsState } from "../assets/types/Types";
 
 export default function TypingAltr() {
     const words =
-        "apple, elephant, guitar, lamp, rainbow, butterfly, ocean, mountain, laughter, sunshine, castle, computer, airplane, chocolate, happiness, friendship, book, adventure, moonlight, forest, diamond, starlight, waterfall, unicorn, pillow, dream, freedom, melody, courage, treasure, whisper, harmony, magic, galaxy, balloon, island, mystery, sunrise, innocence, peace, journey, smile, wonder, dragon";
+        "apple, elephant, guitar, lamp, rainbow, butterfly, ocean, mountain, laughter, sunshine, castle, computer, airplane, chocolate, happiness, friendship, book, adventure, moonlight, forest, diamond, starlight, waterfall, unicorn, pillow, dream, freedom, melody, courage, treasure, whisper, harmony, magic, galaxy, balloon, island, mystery, sunrise, innocence, peace, journey, smile, wonder";
     const wordsArr = words.split(",").map((i) => i.trim());
     const [pointerPos, setPointerPos] = useState([0, 0]);
     const [isTestStarted, setIsTestStarted] = useState(false);
@@ -25,6 +25,14 @@ export default function TypingAltr() {
         }
     }, []);
 
+    useEffect(() => {
+        console.log(pointerPos[0], '===', wordsArr.length - 1, pointerPos[1], '===', wordsArr[pointerPos[0]].length, '', returnInterval);
+        if (pointerPos[0] === wordsArr.length - 1 && pointerPos[1] === wordsArr[pointerPos[0]].length && returnInterval) {
+            clearInterval(returnInterval);
+            setPointerPos([0, 0])
+            alert(correctChar)
+        }
+    }, [pointerPos])
 
     const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
         if (event.key.trim().length == 1 || event.key === 'Backspace' || event.key === ' ') {
@@ -60,21 +68,12 @@ export default function TypingAltr() {
                         }
                     })
                 }))
+
             }
             //if pressed key is not correct
             else {
                 //if pressed key is "space" and the pointer is on last character of the word
                 if (event.key === ' ' && pointerPos[1] === wordsArr[pointerPos[0]].length) {
-                    console.log(pointerPos[0], wordsArr.length - 1);
-                    console.log(pointerPos[1], wordsArr[pointerPos[0]].length);
-                    console.log(returnInterval);
-
-
-
-                    if (pointerPos[0] === wordsArr.length - 1 && pointerPos[1] === wordsArr[pointerPos[0]].length && returnInterval) {
-                        clearInterval(returnInterval);
-                        alert(correctChar)
-                    }
                     setPointerPos(prevPointerPos => [prevPointerPos[0] + 1, 0])
                 }
                 //if pressed key is just incorrect
