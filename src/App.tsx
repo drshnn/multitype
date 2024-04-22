@@ -21,7 +21,7 @@ function App() {
     <div className="w-screen h-screen text-white bg-black p-10 overflow-hidden flex items-center justify-center">
       <div className="flex">
         <h1 className="text-7xl font-bold flex-1">
-          Typee, test your typing speed
+          Multitype, test your typing speed
         </h1>
         <div className="flex flex-col flex-1 items-center justify-center">
           <form

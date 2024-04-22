@@ -95,11 +95,12 @@ export default function TypingAltr() {
 
 
     return (
-        <div className="words-wrap h-1/2 w-9/12 overflow-hidden flex flex-row gap-4 flex-wrap focus:outline-none" onKeyDown={handleKeyDown} tabIndex={0} ref={divRef}>
+        // height - 3 * line height(2rem) + 2 * gap(1rem)
+        <div className="words-wrap h-[8rem] w-9/12 overflow-hidden flex flex-row gap-4 flex-wrap focus:outline-none" onKeyDown={handleKeyDown} tabIndex={0} ref={divRef}>
             {wordsState.map((word, wordId) => {
                 return (
                     <div
-                        className="word flex flex-row gap-[2px] text-2xl items-center"
+                        className="word flex flex-row gap-[2px] text-2xl items-center leading-8"
                         key={wordId}
                     >
                         {word.map((letter, letterId) => {
