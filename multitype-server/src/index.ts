@@ -3,6 +3,7 @@ import { log } from 'console';
 import express from 'express';
 import http from 'http'
 import { Server } from 'socket.io';
+import Room from './utils/Room';
 
 
 const app = express()
@@ -15,11 +16,12 @@ const io = new Server(server, {
 
 
 io.on('connect', (socket) => {
-    log('user connected with id: ', socket.id.toString())
-    // socket.join(randomUUID())
-    // //list rooms
-    // log(io.sockets.adapter.rooms)
+    const username = socket.handshake.query['username']?.toString()
+    log('user connected with id: ', socket.id.toString(), "username", socket.handshake.query['username']?.toString())
+    const room = Room.joinEmptyRoom(username ?? '', socket)
+    socket.emit('joinedRoom', { roomId: room.roomId, users: room.userNames })
 })
+
 
 server.listen(3000, () => {
     log('server runnin on 3000')

@@ -5,12 +5,14 @@ import { socket } from '../utils/socket';
 
 function Race() {
     useEffect(() => {
-        socket.connect();
-        socket.on('connect', () => {
-            console.log(socket.id)
+        const s = socket(localStorage.getItem('name') ?? '').connect();
+        s.on('connect', () => {
+            console.log("user connected");
+
         })
-        socket.on('userAdded', (data) => {
-            console.log(data.userCount)
+        s.on('joinedRoom', ({ roomId, users }: { roomId: string, users: string[] }) => {
+            console.log("user joined a room with roomId: ", roomId)
+            console.log(users)
         })
     }, [])
     return (
