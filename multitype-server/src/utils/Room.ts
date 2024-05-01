@@ -24,6 +24,10 @@ export default class Room {
     }
     public get users() {
         return this._users;
+
+    }
+    private set users(users: RoomUser[]) {
+        this._users = users;
     }
     public get userNames() {
         return this._users.map((i, j) => { return { username: i.username, id: j } })
@@ -59,6 +63,11 @@ export default class Room {
         }
         emptyRooms[0].join(username, socket)
         return emptyRooms[0]
+    }
+
+    public leaveRoom(sessionId: string) {
+        const newUsersList = this.users.filter(i => i.socket.id.toString() !== sessionId)
+        this.users = newUsersList
     }
 
 }

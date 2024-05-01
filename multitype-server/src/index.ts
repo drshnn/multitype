@@ -20,8 +20,12 @@ io.on('connect', (socket) => {
     log('user connected with id: ', socket.id.toString(), "username", socket.handshake.query['username']?.toString())
     const room = Room.joinEmptyRoom(username ?? '', socket)
     socket.emit('joinedRoom', { roomId: room.roomId, users: room.userNames, words: room.words })
+    socket.on('disconnect', () => {
+        log("user disconnected with id ", socket.id.toString())
+        room.leaveRoom(socket.id.toString())
+        log(room.getRoomSize())
+    })
 })
-
 
 server.listen(3000, () => {
     log('server runnin on 3000')
