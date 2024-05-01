@@ -2,14 +2,17 @@ import { Server, Socket } from "socket.io";
 import { RoomUser } from "../types/User";
 import { MAX_ROOM_SIZE } from "./Constants";
 import { randomUUID } from "crypto";
+import { words } from "./Words";
 
 export default class Room {
     private _roomId: string;
     private _users: RoomUser[] = [];
     static rooms: Room[] = [];
-    constructor(username: string, socket: Socket) {
+    private _words: string;
+    constructor(username: string, socket: Socket, words: string) {
         this._roomId = randomUUID().toString();
         this.join(username, socket)
+        this._words = words
     }
 
     public get roomId() {
@@ -23,7 +26,10 @@ export default class Room {
         return this._users;
     }
     public get userNames() {
-        return this._users.map(i => i.username)
+        return this._users.map((i, j) => { return { username: i.username, id: j } })
+    }
+    public get words() {
+        return this._words
     }
 
     private join(username: string, socket: Socket) {
@@ -47,7 +53,8 @@ export default class Room {
     public static joinEmptyRoom(username: string, socket: Socket): Room {
         const emptyRooms = Room.rooms.filter(room => room.getRoomSize() < MAX_ROOM_SIZE)
         if (emptyRooms.length == 0) {
-            const room = new Room(username, socket)
+            //make a db call for a list of words
+            const room = new Room(username, socket, words)
             return room
         }
         emptyRooms[0].join(username, socket)

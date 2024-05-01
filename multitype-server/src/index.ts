@@ -19,7 +19,7 @@ io.on('connect', (socket) => {
     const username = socket.handshake.query['username']?.toString()
     log('user connected with id: ', socket.id.toString(), "username", socket.handshake.query['username']?.toString())
     const room = Room.joinEmptyRoom(username ?? '', socket)
-    socket.emit('joinedRoom', { roomId: room.roomId, users: room.userNames })
+    socket.emit('joinedRoom', { roomId: room.roomId, users: room.userNames, words: room.words })
 })
 
 
