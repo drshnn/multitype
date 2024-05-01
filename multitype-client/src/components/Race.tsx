@@ -14,6 +14,11 @@ function Race() {
             console.log("user joined a room with roomId: ", roomId)
             console.log(users)
         })
+        return () => {
+            s.disconnect()
+            s.off('connect')
+            s.off('joinedRoom')
+        }
     }, [])
     return (
         <div className="w-screen h-screen text-white bg-black p-10 overflow-hidden flex items-center justify-center">
