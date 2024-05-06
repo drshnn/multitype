@@ -5,7 +5,10 @@ function UserProgress({ users }: { users: SocketUser[] }) {
     <div className="h-60 w-9/12 flex flex-col gap-8 pt-10 px-6 py-4 relative">
       {users.map((user) => {
         return (
-          <div className="user flex items-center justify-between gap-6">
+          <div
+            className="user flex items-center justify-between gap-6"
+            key={user.id}
+          >
             <div className="name w-40">{user.username}</div>
             <div className="progress-bar border-t-4 border-dashed border-gray-300 flex-1"></div>
           </div>

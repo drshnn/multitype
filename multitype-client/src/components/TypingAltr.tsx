@@ -2,9 +2,10 @@ import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import { WordsState } from "../assets/types/Types";
 
 export default function TypingAltr({ wordList }: { wordList: string }) {
-  const words =
-    "apple, elephant, guitar, lamp, rainbow, butterfly, ocean, mountain, laughter, sunshine, castle, computer, airplane, chocolate, happiness, friendship, book, adventure, moonlight, forest, diamond, starlight, waterfall, unicorn, pillow, dream, freedom, melody, courage, treasure, whisper, harmony, magic, galaxy, balloon, island, mystery, sunrise, innocence, peace, journey, smile, wonder";
-  const wordsArr = words.split(",").map((i) => i.trim());
+  const [words, setWords] = useState(wordList);
+  const [wordsArr, setWordsArr] = useState(
+    words.split(",").map((i) => i.trim())
+  );
   const [pointerPos, setPointerPos] = useState([0, 0]);
   const [isTestStarted, setIsTestStarted] = useState(false);
   const [wordsState, setWordsState] = useState<WordsState[][]>(
@@ -15,7 +16,7 @@ export default function TypingAltr({ wordList }: { wordList: string }) {
     })
   );
   useEffect(() => {
-    console.log(wordList);
+    setWords(wordList);
   }, [wordList]);
   const [returnInterval, setReturnInterval] = useState<number>();
   const [correctChar, setCorrectChar] = useState(0);
