@@ -36,6 +36,12 @@ function Race() {
     s.on("someUserLeft", ({ users }: { users: SocketUser[] }) => {
       setUsers(users);
     });
+    s.on('countdown', (time: string) => {
+      console.log(time);
+    })
+    s.on('started', (message: string) => {
+      console.log(message);
+    })
     return () => {
       s.disconnect();
       s.off("connect");

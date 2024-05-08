@@ -9,6 +9,7 @@ export default class Room {
     private _users: RoomUser[] = [];
     static rooms: Room[] = [];
     private _words: string;
+    private _isStarted: boolean = false;
     constructor(username: string, socket: Socket, words: string) {
         this._roomId = randomUUID().toString();
         this.join(username, socket)
@@ -25,6 +26,12 @@ export default class Room {
     public get users() {
         return this._users;
 
+    }
+    public get isStarted() {
+        return this._isStarted;
+    }
+    public set isStarted(isStarted: boolean) {
+        this._isStarted = isStarted
     }
     private set users(users: RoomUser[]) {
         this._users = users;
@@ -55,7 +62,7 @@ export default class Room {
     // }
 
     public static joinEmptyRoom(username: string, socket: Socket): Room {
-        const emptyRooms = Room.rooms.filter(room => room.getRoomSize() < MAX_ROOM_SIZE)
+        const emptyRooms = Room.rooms.filter(room => room.getRoomSize() < MAX_ROOM_SIZE && !room.isStarted)
         if (emptyRooms.length == 0) {
             //make a db call for a list of words
             const room = new Room(username, socket, words)

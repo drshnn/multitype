@@ -27,6 +27,18 @@ io.on("connect", (socket) => {
     words: room.words,
   });
   io.to(room.roomId).emit("newUserJoined", { users: room.userNames });
+  if (room.users.length === 4) {
+    let i = 3;
+    const countdown = setInterval(() => {
+      io.to(room.roomId).emit('countdown', i)
+      i--;
+      if (i == 0) {
+        clearTimeout(countdown);
+        io.to(room.roomId).emit('started', 'game started')
+        room.isStarted = true
+      }
+    }, 1000);
+  }
   socket.on("disconnect", () => {
     log("user disconnected with id ", socket.id.toString());
     room.leaveRoom(socket.id.toString());
