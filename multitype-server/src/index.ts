@@ -34,7 +34,8 @@ io.on("connect", (socket) => {
       i--;
       if (i == 0) {
         clearTimeout(countdown);
-        io.to(room.roomId).emit('started', 'game started')
+
+        io.to(room.roomId).emit('started', room.userNames.map(i => { return { ...i, progress: 0 } }))
         room.isStarted = true
       }
     }, 1000);

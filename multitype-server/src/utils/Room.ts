@@ -77,4 +77,12 @@ export default class Room {
         this.users = newUsersList
     }
 
+
+    /**
+     * write a logic to destroy the room once race completes and everyone leaves
+     */
+    public destroy() {
+
+    }
+
 }
