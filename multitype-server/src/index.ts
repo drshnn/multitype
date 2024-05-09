@@ -25,6 +25,7 @@ io.on("connect", (socket) => {
     roomId: room.roomId,
     users: room.userNames,
     words: room.words,
+    currentUser: room.userNames[room.userNames.length - 1]
   });
   io.to(room.roomId).emit("newUserJoined", { users: room.userNames });
   if (room.users.length === 4) {
@@ -40,6 +41,9 @@ io.on("connect", (socket) => {
       }
     }, 1000);
   }
+  socket.on("progress", (progress: { id: number, username: string, progress: number }) => {
+    io.to(room.roomId).emit('progress', progress)
+  })
   socket.on("disconnect", () => {
     log("user disconnected with id ", socket.id.toString());
     room.leaveRoom(socket.id.toString());
