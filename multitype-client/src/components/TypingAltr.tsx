@@ -1,7 +1,9 @@
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import { WordsState } from "../assets/types/Types";
+import { Socket } from "socket.io-client";
+import { SocketUser } from "../types/user";
 
-export default function TypingAltr({ wordList }: { wordList: string }) {
+export default function TypingAltr({ wordList, socket, currentUser }: { wordList: string, socket: Socket, currentUser: SocketUser }) {
   const [words, setWords] = useState(wordList);
   const [wordsArr, setWordsArr] = useState(
     words.split(",").map((i) => i.trim())
@@ -17,9 +19,18 @@ export default function TypingAltr({ wordList }: { wordList: string }) {
   );
   useEffect(() => {
     setWords(wordList);
+    let temp = 0;
+    wordList.split(',').forEach(i => {
+      i.split('').forEach(j => {
+        if (j !== ' ')
+          temp++
+      })
+    })
+    setTotalLength(temp)
   }, [wordList]);
   const [returnInterval, setReturnInterval] = useState<number>();
   const [correctChar, setCorrectChar] = useState(0);
+  const [totalLength, setTotalLength] = useState(0)
 
   const divRef = useRef<HTMLDivElement | null>(null);
 
@@ -48,9 +59,14 @@ export default function TypingAltr({ wordList }: { wordList: string }) {
     ) {
       clearInterval(returnInterval);
       setPointerPos([0, 0]);
-      alert(correctChar);
+      // alert(correctChar);
     }
   }, [pointerPos]);
+
+  useEffect(() => {
+    console.log(Math.floor((correctChar / totalLength) * 100));
+    socket.emit('progress', { id: currentUser.id, username: currentUser.username, progress: Math.floor((correctChar / totalLength) * 100) })
+  }, [correctChar, totalLength])
 
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (
