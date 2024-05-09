@@ -1,6 +1,22 @@
-import { SocketUser } from "../types/user";
+import { useEffect, useRef } from "react";
+import { SocketUser, SocketUserWithProgress } from "../types/user";
 
-function UserProgress({ users }: { users: SocketUser[] }) {
+function UserProgress({ users, progress }: { users: SocketUser[], progress: SocketUserWithProgress }) {
+  const progressRef = useRef(null)
+  useEffect(() => {
+    console.log(progress);
+    Object.keys(progress).forEach((i: string) => {
+      const p = progress[parseInt(i, 10)]
+      const progressRound = document.getElementById('progress-' + i)
+      console.log(progressRound?.offsetWidth, "px offset widht");
+      if (progressRound && progressRound.parentElement) {
+        console.log(progressRound?.offsetWidth, p.progress);
+
+        progressRound.style.left = (progressRound.parentElement.offsetWidth * p.progress) / 100 + 'px'
+      }
+
+    })
+  }, [progress])
   return (
     <div className="h-60 w-9/12 flex flex-col gap-8 pt-10 px-6 py-4 relative">
       {users.map((user) => {
@@ -10,7 +26,9 @@ function UserProgress({ users }: { users: SocketUser[] }) {
             key={user.id}
           >
             <div className="name w-40">{user.username}</div>
-            <div className="progress-bar border-t-4 border-dashed border-gray-300 flex-1"></div>
+            <div className="progress-bar border-t-4 border-dashed border-gray-300 flex-1 relative">
+              <div className="round h-5 w-5 bg-white rounded-full absolute -top-3" id={'progress-' + user.id}></div>
+            </div>
           </div>
         );
       })}
