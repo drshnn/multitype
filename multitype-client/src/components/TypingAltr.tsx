@@ -3,7 +3,7 @@ import { WordsState } from "../assets/types/Types";
 import { Socket } from "socket.io-client";
 import { SocketUser } from "../types/user";
 
-export default function TypingAltr({ wordList, socket, currentUser }: { wordList: string, socket: Socket, currentUser: SocketUser }) {
+export default function TypingAltr({ wordList, socket, currentUser, startTime }: { wordList: string, socket: Socket, currentUser: SocketUser, startTime: number }) {
   const [words, setWords] = useState(wordList);
   const [wordsArr, setWordsArr] = useState(
     words.split(",").map((i) => i.trim())
@@ -60,6 +60,8 @@ export default function TypingAltr({ wordList, socket, currentUser }: { wordList
       clearInterval(returnInterval);
       setPointerPos([0, 0]);
       // alert(correctChar);
+      alert(totalLength / ((new Date().getTime() - startTime) / 60000));
+      // socket.emit('wpm',)
     }
   }, [pointerPos]);
 

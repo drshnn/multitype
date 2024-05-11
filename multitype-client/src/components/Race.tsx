@@ -12,6 +12,7 @@ function Race() {
   const [currentUser, setCurrentUser] = useState<SocketUser>({} as SocketUser)
   const [usersProgress, setUsersProgress] = useState<SocketUserWithProgress>({})
   const [s, setS] = useState({} as Socket);
+  const [time, setTime] = useState(0)
 
   useEffect(() => {
     setS(() => socket(localStorage.getItem("name") ?? "").connect());
@@ -59,6 +60,7 @@ function Race() {
         const progress: SocketUserWithProgress = {}
         init.forEach(i => { progress[i.id] = i })
         setUsersProgress(progress)
+        setTime(new Date().getTime())
       })
       s.on('progress', (userProgress: Progress) => {
         setUsersProgress(prev => { return { ...prev, [userProgress.id]: userProgress } })
@@ -73,7 +75,7 @@ function Race() {
         // <div className="users-count">users joined {users.length}/4</div>
         <UserProgress users={users} progress={usersProgress} />
       )}
-      {words !== "" && Object.keys(s).length !== 0 && Object.keys(currentUser).length !== 0 && <TypingAltr wordList={words} socket={s} currentUser={currentUser} />}
+      {words !== "" && Object.keys(s).length !== 0 && Object.keys(currentUser).length !== 0 && time !== 0 && <TypingAltr wordList={words} socket={s} currentUser={currentUser} startTime={time} />}
     </div>
   );
 }
